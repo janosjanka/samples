@@ -21,25 +21,34 @@ internal readonly unsafe ref struct AlignedArray<T> where T : unmanaged
     /// <summary>
     /// Creates an aligned array.
     /// </summary>
-    public AlignedArray(int length, int alignment = 16)
+    /// <param name="length">The length of the array to allocate.</param>
+    /// <param name="alignment">The alignment of data in the memory.</param>
+    public AlignedArray(int length, int alignment)
     {
-        var offs = alignment - 1;
-        _mem = Marshal.AllocHGlobal(length * sizeof(T) + offs);
-        _ptr = (T*)(alignment * (((long)_mem + offs) / alignment));
+        var offset = alignment - 1;
+        _mem = Marshal.AllocHGlobal(length * sizeof(T) + offset);
+        _ptr = (T*)(alignment * (((long)_mem + offset) / alignment));
         _len = length;
     }
 
     /// <summary>
     /// Creates an aligned array.
     /// </summary>
-    public AlignedArray(T[] elements, int alignment)
+    /// <param name="elements">The elements to initialize the array with.</param>
+    /// <param name="alignment">The alignment of data in the memory.</param>
+    public AlignedArray(T[] elements, int alignment = 16)
         : this(elements.Length, alignment)
     {
-        var it = _ptr;
-        for (var i = 0; i < elements.Length; i++)
-        {
-            *it++ = elements[i];
-        }
+        elements.CopyTo(Span);
+    }
+
+    /// <summary>
+    /// Returns a span from the current instance.
+    /// </summary>
+    public Span<T> Span
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => new(_ptr, _len);
     }
 
     /// <summary>
@@ -88,15 +97,7 @@ internal readonly unsafe ref struct AlignedArray<T> where T : unmanaged
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static explicit operator T[](AlignedArray<T> value)
     {
-        var result = new T[value._len];
-
-        var it = value._ptr;
-        for (var i = 0; i < value._len; i++)
-        {
-            result[i] = *it++;
-        }
-
-        return result;
+        return new Span<T>(value._ptr, value._len).ToArray();
     }
 
     /// <summary>
