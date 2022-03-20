@@ -97,7 +97,7 @@ internal readonly unsafe ref struct AlignedArray<T> where T : unmanaged
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static explicit operator T[](AlignedArray<T> value)
     {
-        return new Span<T>(value._ptr, value._len).ToArray();
+        return value.Span.ToArray();
     }
 
     /// <summary>
