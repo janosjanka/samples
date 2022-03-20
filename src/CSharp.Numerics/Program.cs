@@ -10,7 +10,7 @@ public sealed class Program
 #if DEBUG
     private const int Repeats = 1_000_000;
 #else
-    private const int Repeats = 20_000_000;
+    private const int Repeats = 30_000_000;
 #endif
 
     public static void Main()

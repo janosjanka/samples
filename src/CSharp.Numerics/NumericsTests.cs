@@ -353,7 +353,7 @@ internal sealed class NumericsTests
 
         fixed (int* resultPtr = result, array1 = _array1, array2 = _array2)
         {
-            using Benchmark benchmark = new(_logger, nameof(Multiply_Arrays_Vector256_Avx2_Unrolled_Unaligned), _compareTime);
+            using Benchmark benchmark = new(_logger, compare: _compareTime);
 
             for (var it = 0; it < _repeats; it++)
             {
@@ -374,7 +374,7 @@ internal sealed class NumericsTests
         using AlignedArray<int> array1 = new(_array1, 32);
         using AlignedArray<int> array2 = new(_array2, 32);
 
-        using (Benchmark benchmark = new(_logger, nameof(Multiply_Arrays_Vector256_Avx2_Unrolled_Aligned), _compareTime))
+        using (Benchmark benchmark = new(_logger, compare: _compareTime))
         {
             for (var it = 0; it < _repeats; it++)
             {
