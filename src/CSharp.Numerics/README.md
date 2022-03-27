@@ -1,3 +1,3 @@
-## Simple performance tests comparing modern CPU instruction sets performing simple multiplication of arrays.
+## Performance comparison of modern CPU instruction sets
 
 ![Screenshot](readme.png)
