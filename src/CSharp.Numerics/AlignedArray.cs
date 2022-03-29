@@ -25,9 +25,8 @@ internal readonly unsafe ref struct AlignedArray<T> where T : unmanaged
     /// <param name="alignment">The alignment of data in the memory.</param>
     public AlignedArray(int length, int alignment)
     {
-        var offset = alignment - 1;
-        _mem = Marshal.AllocHGlobal(length * sizeof(T) + offset);
-        _ptr = (T*)(alignment * (((long)_mem + offset) / alignment));
+        _mem = Marshal.AllocHGlobal(length * sizeof(T) + alignment);
+        _ptr = (T*)(((long)_mem + alignment - 1) & ~(alignment - 1));
         _len = length;
     }
 
@@ -105,6 +104,7 @@ internal readonly unsafe ref struct AlignedArray<T> where T : unmanaged
     /// </summary>
     public void Dispose()
     {
+        //NativeMemory.AlignedFree(_ptr);
         Marshal.FreeHGlobal(_mem);
     }
 }
